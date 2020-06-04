@@ -1,0 +1,187 @@
+type Cliente{
+      id: ID
+      nombre: String
+      apellido: String
+      direccion: String
+      ciudad: String
+      celular: String
+      telefonoCasa: String
+      telefonoTrabajo: String 
+      email: String 
+      vendedor: String
+      
+  }
+  type Referido{
+    id: ID
+    nombre: String!
+    apellido: String!
+    telefono: String!
+    afinidad: String
+    tipo: String
+    observacion: String
+    # idReferido :ID
+    
+    
+  }
+  type Comprometido{
+    comentario: String
+    fechaInicio: String
+    fechaVence: String
+    autoriza: String
+    nonbreVendedor:String
+    numeroVendedor: String
+    
+  }
+
+  type Email{
+    email:  String
+  }
+
+  enum EstadoPedido{
+    PENDIENTE
+    COMPLETADO
+    CANCELADO
+  }
+
+type Producto{
+  id:ID
+  nombre: String!
+  precio: Int!
+  stock: Int
+}
+type ClienteTotal{
+  total : Float
+  cliente : [Cliente]
+}
+# type VendedoresTotal{
+#   total : Float
+#   vendedor : [Usuario]
+
+# }
+
+type Token {
+  token: String!
+}
+
+type Usuario {
+  usuario: String
+  id: ID
+  nombre: String
+  rol: String
+}
+
+type Pedido{
+  id: ID
+  pedido: [PedidoProducto]
+  total: Int
+  fecha: String
+  cliente: ID
+  estado: EstadoPedido
+  vendedor: ID
+}
+type PedidoProducto{
+  id: ID
+  cantidad: Int
+}
+
+  """Asigna la Categoria Del Cliente """ 
+  
+  type Query {
+      getClientes (limite: Int, offset: Int, vendedor : String): [Cliente]
+      getCliente(id: ID) : Cliente
+      totalClientes (vendedor : String) : String
+
+      #Producto
+      obtenerProductos(limite: Int, offset: Int, stock: Boolean) : [Producto]
+      obtenerProducto(id: ID!) : Producto
+      totalProductos : String
+
+      #Referidos
+      obtenerReferidos(limite: Int, offset: Int) : [Referido]
+      obtenerReferido(id: ID!) : Referido
+      totalReferidos : String
+      
+
+      #Pedidos
+      obtenerPedidos(cliente : String) : [Pedido]
+
+      #Graficas
+      topClientes : [ClienteTotal]
+      # obtenerVendedores: [VendedoresTotal]
+
+      #Usuarios 
+      obtenerUsuario : Usuario
+
+  }
+
+  input ReferidoInput{
+    id: ID
+    nombre: String!
+    apellido: String!
+    telefono: String!
+    afinidad: String
+    tipo: String
+    observacion: String
+    idReferido :ID
+  }
+  
+  input EmailInput{
+    email: String
+  }
+  """Campos Para los Nuevos Cliebtes""" 
+  input ClienteInput{
+    id: ID
+    nombre: String!
+    apellido: String!
+    direccion: String!
+    ciudad: String!
+    celular: String!
+    telefonoCasa: String!
+    telefonoTrabajo: String!
+    email: String
+    vendedor: ID
+  }
+input  ProductoInput{
+  id:ID
+  nombre: String!
+  precio: Int!
+  stock: Int
+}
+input PedidoInput{
+  id: ID
+  pedido: [PedidoProductoInput]
+  total: Int
+  fecha: String
+  cliente: ID
+  estado: EstadoPedido
+  vendedor: ID
+}
+input PedidoProductoInput{
+  id: ID
+  cantidad: Int
+}
+
+
+"""Mutation Para crear nuevos Clientes """
+  type Mutation{
+    #Nombre del Resolvers, Input con Dato y Valor Que Retorna
+    """Te Permite Crear Nuevos Clientes"""  
+    crearCliente(input: ClienteInput) : Cliente
+    actualizarCliente(input: ClienteInput) : Cliente
+    eliminarCliente (id: ID!) : String 
+    #Productos
+    nuevoProducto(input: ProductoInput) : Producto 
+    actualizarProducto(input: ProductoInput) : Producto
+    eliminarProducto(id: ID!) : String
+    #Para nuevo Referidos
+    nuevoReferido(input: ReferidoInput) : Referido
+    actualizarReferido(input: ReferidoInput) : Referido
+    eliminarReferido(id: ID!) : String
+    
+    #Pedidos
+    nuevoPedido(input : PedidoInput) : Pedido
+    actualizarEstado(input : PedidoInput) : String
+    #Usuarios
+    crearUsuario(usuario: String!, nombre: String!, password: String!, rol: String! ) : String
+    autenticarUsuario(usuario: String, password: String) : Token
+  }
